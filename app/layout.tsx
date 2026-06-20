@@ -9,13 +9,13 @@ const cairo = Cairo({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-const siteUrl = "https://www.madaar-electronics.com";
+const siteUrl = "https://homelly-tech.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "مدار الأجهزة الإلكترونية | أفضل الأجهزة بأعلى جودة وأفضل سعر",
-    template: "%s | مدار الأجهزة الإلكترونية",
+    default: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    template: "%s | هوملي تيك",
   },
   description:
     "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية. نوفر لكم أحدث الابتكارات التقنية من أرقى الماركات العالمية بأفضل الأسعار مع ضمان الجودة.",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     "أجهزة إلكترونية",
     "تقنية",
     "أجهزة منزلية",
-    "مدار",
+    "هوملي تيك",
     "تسوق إلكتروني",
     "أفضل سعر",
     "ماركات عالمية",
@@ -32,26 +32,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_SA",
     url: siteUrl,
-    siteName: "مدار الأجهزة الإلكترونية",
-    title: "مدار الأجهزة الإلكترونية | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    siteName: "هوملي تيك",
+    title: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
     description:
       "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية. نوفر لكم أحدث الابتكارات التقنية من أرقى الماركات العالمية.",
     images: [
       {
-        url: "https://www.madaar-electronics.com/og-image.jpg",
+        url: "https://homelly-tech.com/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "مدار الأجهزة الإلكترونية",
+        alt: "هوملي تيك",
         type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "مدار الأجهزة الإلكترونية | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    title: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
     description:
       "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية.",
-    images: ["https://www.madaar-electronics.com/og-image.jpg"],
+    images: ["https://homelly-tech.com/og-image.jpg"],
   },
   robots: {
     index: true,
