@@ -1,8 +1,8 @@
 const categories = [
   {
-    name: "تكييفات",
-    image: "/taq.webp",
-    slug: "air_conditioners",
+    name: "أثاث منزلي",
+    image: "/homew.webp",
+    slug: "pillows_bedding",
     large: true,
   },
   {
