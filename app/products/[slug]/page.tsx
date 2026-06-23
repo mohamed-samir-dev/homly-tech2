@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useCart } from "../../context/CartContext";
@@ -57,6 +57,7 @@ function parseDescription(desc: string) {
 export default function ProductDetailsPage() {
   const { slug } = useParams();
   const { addToCart } = useCart();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
@@ -90,8 +91,7 @@ export default function ProductDetailsPage() {
       },
       quantity
     );
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    router.push("/cart");
   };
 
   if (loading) {
