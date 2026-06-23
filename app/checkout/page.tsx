@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "tap">("cash");
   const [form, setForm] = useState({ customerName: "", phone: "", address: "", notes: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -63,13 +64,26 @@ export default function CheckoutPage() {
           phone: form.phone,
           address: form.address,
           notes: form.notes,
+          paymentMethod: paymentMethod === "tap" ? "tap" : "cash_on_delivery",
           items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "حدث خطأ");
-      clearCart();
-      router.push(`/order-success?id=${data.data._id}`);
+
+      if (paymentMethod === "tap") {
+        const tapRes = await fetch(`${API_URL}/api/orders/${data.data._id}/tap-session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        const tapData = await tapRes.json();
+        if (!tapRes.ok) throw new Error(tapData.message || "فشل إنشاء جلسة الدفع");
+        clearCart();
+        window.location.href = tapData.checkoutUrl;
+      } else {
+        clearCart();
+        router.push(`/order-success?id=${data.data._id}`);
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "حدث خطأ غير متوقع");
     } finally {
@@ -173,15 +187,38 @@ export default function CheckoutPage() {
                 <span className="material-symbols-outlined text-secondary">payments</span>
                 طريقة الدفع
               </h2>
-              <div className="border-2 border-secondary rounded-xl p-4 bg-secondary/5 flex items-center gap-3">
-                <span className="w-5 h-5 rounded-full border-2 border-secondary flex items-center justify-center">
-                  <span className="w-2.5 h-2.5 rounded-full bg-secondary"></span>
-                </span>
-                <span className="material-symbols-outlined text-secondary">local_shipping</span>
-                <div>
-                  <p className="font-bold text-on-surface text-sm">الدفع عند الاستلام</p>
-                  <p className="text-xs text-on-surface-variant">ادفع نقداً عند استلام طلبك</p>
-                </div>
+              <div className="flex flex-col gap-3">
+                {/* Cash */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("cash")}
+                  className={`border-2 rounded-xl p-4 flex items-center gap-3 transition-all ${paymentMethod === "cash" ? "border-secondary bg-secondary/5" : "border-outline-variant/40"}`}
+                >
+                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "cash" ? "border-secondary" : "border-outline-variant"}`}>
+                    {paymentMethod === "cash" && <span className="w-2.5 h-2.5 rounded-full bg-secondary" />}
+                  </span>
+                  <span className="material-symbols-outlined text-secondary">local_shipping</span>
+                  <div className="text-right">
+                    <p className="font-bold text-on-surface text-sm">الدفع عند الاستلام</p>
+                    <p className="text-xs text-on-surface-variant">ادفع نقداً عند استلام طلبك</p>
+                  </div>
+                </button>
+
+                {/* Tabby */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("tap")}
+                  className={`border-2 rounded-xl p-4 flex items-center gap-3 transition-all ${paymentMethod === "tap" ? "border-secondary bg-secondary/5" : "border-outline-variant/40"}`}
+                >
+                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "tabby" ? "border-secondary" : "border-outline-variant"}`}>
+                    {paymentMethod === "tap" && <span className="w-2.5 h-2.5 rounded-full bg-secondary" />}
+                  </span>
+                  <span className="material-symbols-outlined text-secondary">splitscreen</span>
+                  <div className="text-right">
+                    <p className="font-bold text-on-surface text-sm">Tap - الدفع الإلكتروني</p>
+                    <p className="text-xs text-on-surface-variant">ادفع بالبطاقة البنكية أو مدى</p>
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -192,6 +229,11 @@ export default function CheckoutPage() {
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : paymentMethod === "tap" ? (
+                <>
+                  <span className="material-symbols-outlined">credit_card</span>
+                  المتابعة للدفع مع Tap
+                </>
               ) : (
                 <>
                   <span className="material-symbols-outlined">check_circle</span>
