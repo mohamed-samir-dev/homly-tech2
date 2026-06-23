@@ -210,7 +210,7 @@ export default function CheckoutPage() {
                   onClick={() => setPaymentMethod("tap")}
                   className={`border-2 rounded-xl p-4 flex items-center gap-3 transition-all ${paymentMethod === "tap" ? "border-secondary bg-secondary/5" : "border-outline-variant/40"}`}
                 >
-                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "tabby" ? "border-secondary" : "border-outline-variant"}`}>
+                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "tap" ? "border-secondary" : "border-outline-variant"}`}>
                     {paymentMethod === "tap" && <span className="w-2.5 h-2.5 rounded-full bg-secondary" />}
                   </span>
                   <span className="material-symbols-outlined text-secondary">splitscreen</span>
