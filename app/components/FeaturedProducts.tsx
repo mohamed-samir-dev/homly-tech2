@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 
 interface Product {
@@ -18,9 +19,10 @@ export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/products?sort=newest&limit=4`)
+    fetch(`${API_URL}/api/products?sort=newest&limit=8`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data || []))
       .catch(() => {});
@@ -36,8 +38,7 @@ export default function FeaturedProducts() {
       image: product.images?.[0] || "",
       stock: product.stock,
     });
-    setAddedId(product._id);
-    setTimeout(() => setAddedId(null), 1500);
+    router.push("/cart");
   };
 
   return (
@@ -46,7 +47,7 @@ export default function FeaturedProducts() {
         <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">منتجاتنا المختارة</h2>
         <a className="text-secondary text-sm sm:text-base hover:underline" href="/products">عرض الكل</a>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4">
         {products.map((product) => (
           <a href={`/products/${product.slug}`} key={product._id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-surface-variant p-2 sm:p-3 md:p-4 flex flex-col">
             <div className="relative h-32 sm:h-40 md:h-48 mb-2 sm:mb-3 bg-white rounded-lg overflow-hidden">

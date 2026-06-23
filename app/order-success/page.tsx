@@ -20,9 +20,15 @@ function OrderSuccessContent() {
     if (!tap_id) { setVerifyStatus("failed"); return; }
     fetch(`${API_URL}/api/orders/${orderId}/verify-payment?tap_id=${tap_id}`)
       .then((r) => r.json())
-      .then((d) => setVerifyStatus(d.success ? "success" : "failed"))
+      .then((d) => {
+        if (d.success) {
+          window.location.href = `/invoice/${orderId}`;
+        } else {
+          setVerifyStatus("failed");
+        }
+      })
       .catch(() => setVerifyStatus("failed"));
-  }, []);
+  }, [orderId, shouldVerify, searchParams]);
 
   if (verifyStatus === "loading") {
     return (

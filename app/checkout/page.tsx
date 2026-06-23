@@ -32,8 +32,8 @@ export default function CheckoutPage() {
     if (!/^(05|5)\d{8}$/.test(form.phone)) {
       errors.phone = "رقم الهاتف يجب أن يبدأ بـ 05 ويتكون من 10 أرقام";
     }
-    if (!form.address.trim() || form.address.trim().length < 10) {
-      errors.address = "العنوان يجب أن يكون 10 أحرف على الأقل";
+    if (!form.address.trim() || form.address.trim().length < 3) {
+      errors.address = "العنوان يجب أن يكون 3 أحرف على الأقل";
     }
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
