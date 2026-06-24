@@ -21,13 +21,11 @@ interface Product {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  laptops: "حواسيب محمولة",
-  tvs: "شاشات وتلفزيونات",
-  printers: "طابعات",
-  cameras: "كاميرات",
-  accessories: "إكسسوارات",
+  living_room: "معيشة",
+  bedroom: "نوم",
+  office_furniture: "أثاث مكتبي",
+  outdoor_furniture: "أثاث خارجي",
   home_devices: "أجهزة منزلية",
-  air_conditioners: "مكيفات",
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
