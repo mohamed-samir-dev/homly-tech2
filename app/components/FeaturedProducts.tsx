@@ -16,17 +16,20 @@ interface Product {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/products?sort=newest&limit=8`)
+    fetch(`${API_URL}/api/products?sort=newest&limit=50`)
       .then((res) => res.json())
-      .then((data) => setProducts(data.data || []))
+      .then((data) => setAllProducts(data.data || []))
       .catch(() => {});
   }, []);
+
+  const featured = allProducts.slice(0, 6);
+  const rest = allProducts.slice(6);
 
   const handleAdd = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
@@ -42,48 +45,77 @@ export default function FeaturedProducts() {
   };
 
   return (
-    <section dir="rtl" className="py-8 sm:py-12 md:py-16 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-4 sm:mb-6 md:mb-8">
-        <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">منتجاتنا المختارة</h2>
-        <a className="text-secondary text-sm sm:text-base hover:underline" href="/products">عرض الكل</a>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4">
-        {products.map((product) => (
-          <a href={`/products/${product.slug}`} key={product._id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-surface-variant p-2 sm:p-3 md:p-4 flex flex-col">
-            <div className="relative h-32 sm:h-40 md:h-48 mb-2 sm:mb-3 bg-white rounded-lg overflow-hidden">
-              {product.images?.[0] ? (
-                <img
-                  className="w-full h-full object-contain p-2 sm:p-3"
-                  alt={product.name}
-                  src={product.images[0].startsWith("http") ? product.images[0] : `${API_URL}/uploads/${product.images[0]}`}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <span className="material-symbols-outlined text-4xl text-outline/40">image</span>
-                </div>
-              )}
-              {product.oldPrice && (
-                <span className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-error text-white text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
-                  خصم {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
-                </span>
-              )}
+    <div dir="rtl" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Section 1 - منتجاتنا المختارة */}
+      <section className="py-8 sm:py-12 md:py-16">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-4 sm:mb-6 md:mb-8">
+          <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">منتجاتنا المختارة</h2>
+          <a className="text-secondary text-sm sm:text-base hover:underline" href="/products">عرض الكل</a>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {featured.map((product) => (
+            <ProductCard key={product._id} product={product} addedId={addedId} onAdd={handleAdd} />
+          ))}
+        </div>
+      </section>
+
+      {/* Divider */}
+      {rest.length > 0 && (
+        <>
+          <div className="border-t border-surface-variant my-4" />
+
+          {/* Section 2 - استكشف المزيد */}
+          <section className="py-8 sm:py-12 md:py-16">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-4 sm:mb-6 md:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">استكشف المزيد</h2>
             </div>
-            <h3 className="text-on-surface font-semibold text-xs sm:text-sm md:text-base mb-1 sm:mb-2 line-clamp-2">{product.name}</h3>
-            <div className="mt-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-              <span className="text-secondary font-bold text-base sm:text-lg md:text-[24px]">{product.price.toLocaleString()} ر.س</span>
-              <button
-                onClick={(e) => handleAdd(e, product)}
-                className="bg-primary text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-1 w-full sm:w-auto justify-center"
-              >
-                <span className="material-symbols-outlined text-sm">
-                  {addedId === product._id ? "check" : "add_shopping_cart"}
-                </span>
-                <span className="text-xs sm:text-sm">{addedId === product._id ? "تمت" : "أضف"}</span>
-              </button>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {rest.map((product) => (
+                <ProductCard key={product._id} product={product} addedId={addedId} onAdd={handleAdd} />
+              ))}
             </div>
-          </a>
-        ))}
+          </section>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ProductCard({ product, addedId, onAdd }: { product: Product; addedId: string | null; onAdd: (e: React.MouseEvent, product: Product) => void }) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  return (
+    <a href={`/products/${product.slug}`} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-surface-variant p-2 sm:p-3 md:p-4 flex flex-col">
+      <div className="relative h-32 sm:h-40 md:h-48 mb-2 sm:mb-3 bg-white rounded-lg overflow-hidden">
+        {product.images?.[0] ? (
+          <img
+            className="w-full h-full object-contain p-2 sm:p-3"
+            alt={product.name}
+            src={product.images[0].startsWith("http") ? product.images[0] : `${API_URL}/uploads/${product.images[0]}`}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <span className="material-symbols-outlined text-4xl text-outline/40">image</span>
+          </div>
+        )}
+        {product.oldPrice && (
+          <span className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-error text-white text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
+            خصم {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+          </span>
+        )}
       </div>
-    </section>
+      <h3 className="text-on-surface font-semibold text-xs sm:text-sm md:text-base mb-1 sm:mb-2 line-clamp-2">{product.name}</h3>
+      <div className="mt-auto flex flex-col justify-between gap-2">
+        <span className="text-secondary font-bold text-sm sm:text-lg md:text-[24px]">{product.price.toLocaleString()} ر.س</span>
+        <button
+          onClick={(e) => onAdd(e, product)}
+          className="bg-primary text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-1 w-full justify-center"
+        >
+          <span className="material-symbols-outlined text-sm">
+            {addedId === product._id ? "check" : "add_shopping_cart"}
+          </span>
+          <span className="text-xs sm:text-sm">{addedId === product._id ? "تمت" : "أضف"}</span>
+        </button>
+      </div>
+    </a>
   );
 }
