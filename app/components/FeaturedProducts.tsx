@@ -143,12 +143,9 @@ function ProductCard({
     : null;
 
   return (
-    <a
-      href={`/products/${product.slug}`}
-      className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-secondary/30 hover:shadow-xl transition-all duration-300 flex flex-col"
-    >
+    <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-secondary/30 hover:shadow-xl transition-all duration-300 flex flex-col">
       {/* Image */}
-      <div className="relative bg-gray-50 h-40 sm:h-48 md:h-56 overflow-hidden">
+      <a href={`/products/${product.slug}`} className="relative bg-gray-50 h-40 sm:h-48 md:h-56 overflow-hidden block">
         {imgSrc ? (
           <img
             src={imgSrc}
@@ -170,13 +167,15 @@ function ProductCard({
             <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full border">نفذت الكمية</span>
           </div>
         )}
-      </div>
+      </a>
 
       {/* Info */}
       <div className="p-3 sm:p-4 flex flex-col flex-1">
-        <h3 className="text-on-surface font-semibold text-xs sm:text-sm leading-snug mb-2 line-clamp-2 flex-1">
-          {product.name}
-        </h3>
+        <a href={`/products/${product.slug}`}>
+          <h3 className="text-on-surface font-semibold text-xs sm:text-sm leading-snug mb-2 line-clamp-2 flex-1 hover:text-secondary transition-colors">
+            {product.name}
+          </h3>
+        </a>
 
         <div className="mt-auto">
           <div className="flex items-baseline gap-2 mb-3">
@@ -209,6 +208,6 @@ function ProductCard({
           </button>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
