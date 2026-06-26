@@ -29,8 +29,8 @@ export default function Header() {
     <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-outline-variant/30">
       <nav className="flex justify-between items-center w-full px-4 sm:px-6 lg:px-8 max-w-[1280px] mx-auto h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center shrink-0">
-          <Image src="/logo.png" alt="مدي" width={56} height={56} className="rounded-lg" />
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Image src="/logo.png" alt="هوملي تيك" width={44} height={44} className="rounded-lg" />
         </Link>
 
         {/* Nav Links - Desktop */}

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 
 interface Product {
@@ -11,25 +10,42 @@ interface Product {
   oldPrice?: number;
   stock: number;
   images: string[];
+  category: string;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+const CATEGORY_LABELS: Record<string, string> = {
+  laptops: "لابتوبات",
+  tvs: "تلفزيونات",
+  printers: "طابعات",
+  cameras: "كاميرات",
+  accessories: "إكسسوارات",
+  home_devices: "أجهزة منزلية",
+  air_conditioners: "مكيفات",
+  pillows: "وسائد",
+  furniture: "أثاث",
+  outdoor_furniture: "أثاث خارجي",
+  office_furniture: "أثاث مكتبي",
+  living_room: "معيشة",
+  bedroom: "نوم",
+  pillows_bedding: "وسائد ومفارش",
+  صالون: "صالون",
+  انترية: "انترية",
+  بكجات: "بكجات",
+};
 
 export default function FeaturedProducts() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
-  const router = useRouter();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/products?sort=newest&limit=50`)
+    fetch(`${API_URL}/api/products?limit=500`)
       .then((res) => res.json())
       .then((data) => setAllProducts(data.data || []))
       .catch(() => {});
   }, []);
-
-  const featured = allProducts.slice(0, 6);
-  const rest = allProducts.slice(6);
 
   const handleAdd = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
@@ -41,80 +57,157 @@ export default function FeaturedProducts() {
       image: product.images?.[0] || "",
       stock: product.stock,
     });
-    router.push("/cart");
+    setAddedId(product._id);
+    setTimeout(() => setAddedId(null), 1500);
   };
+
+  const featured = allProducts.filter((p) => p.price <= 1000).slice(0, 6);
+
+  const categoryMap = new Map<string, Product[]>();
+  for (const p of allProducts) {
+    if (!categoryMap.has(p.category)) categoryMap.set(p.category, []);
+    categoryMap.get(p.category)!.push(p);
+  }
+  const categoryGroups = Array.from(categoryMap.entries()).map(([cat, products]) => ({
+    category: cat,
+    label: CATEGORY_LABELS[cat] || cat,
+    products: [...products].sort((a, b) => b.price - a.price).slice(0, 6),
+  }));
 
   return (
     <div dir="rtl" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Section 1 - منتجاتنا المختارة */}
-      <section className="py-8 sm:py-12 md:py-16">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-4 sm:mb-6 md:mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">منتجاتنا المختارة</h2>
-          <a className="text-secondary text-sm sm:text-base hover:underline" href="/products">عرض الكل</a>
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {featured.map((product) => (
-            <ProductCard key={product._id} product={product} addedId={addedId} onAdd={handleAdd} />
-          ))}
-        </div>
-      </section>
+      {featured.length > 0 && (
+        <section className="py-8 sm:py-12 md:py-16">
+          <SectionHeader title="منتجاتنا المميزة" href="/products" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
+            {featured.map((p) => (
+              <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Divider */}
-      {rest.length > 0 && (
-        <>
-          <div className="border-t border-surface-variant my-4" />
-
-          {/* Section 2 - استكشف المزيد */}
+      {categoryGroups.map(({ category, label, products }) => (
+        <div key={category}>
+          <div className="border-t border-gray-100 my-2" />
           <section className="py-8 sm:py-12 md:py-16">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-4 sm:mb-6 md:mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-semibold text-on-surface">استكشف المزيد</h2>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {rest.map((product) => (
-                <ProductCard key={product._id} product={product} addedId={addedId} onAdd={handleAdd} />
+            <SectionHeader title={label} href={`/products?category=${category}`} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
+              {products.map((p) => (
+                <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
               ))}
             </div>
           </section>
-        </>
-      )}
+        </div>
+      ))}
     </div>
   );
 }
 
-function ProductCard({ product, addedId, onAdd }: { product: Product; addedId: string | null; onAdd: (e: React.MouseEvent, product: Product) => void }) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+function SectionHeader({ title, href }: { title: string; href: string }) {
   return (
-    <a href={`/products/${product.slug}`} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-surface-variant p-2 sm:p-3 md:p-4 flex flex-col">
-      <div className="relative h-32 sm:h-40 md:h-48 mb-2 sm:mb-3 bg-white rounded-lg overflow-hidden">
-        {product.images?.[0] ? (
+    <div className="flex justify-between items-center mb-5 sm:mb-7">
+      <div className="flex items-center gap-3">
+        <div className="w-1 h-7 bg-secondary rounded-full" />
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-on-surface">{title}</h2>
+      </div>
+      <a
+        href={href}
+        className="text-secondary text-xs sm:text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+      >
+        عرض الكل
+        <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+      </a>
+    </div>
+  );
+}
+
+function ProductCard({
+  product,
+  addedId,
+  onAdd,
+}: {
+  product: Product;
+  addedId: string | null;
+  onAdd: (e: React.MouseEvent, product: Product) => void;
+}) {
+  const isAdded = addedId === product._id;
+  const discount = product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    : null;
+
+  const imgSrc = product.images?.[0]
+    ? product.images[0].startsWith("http")
+      ? product.images[0]
+      : `${API_URL}/uploads/${product.images[0]}`
+    : null;
+
+  return (
+    <a
+      href={`/products/${product.slug}`}
+      className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-secondary/30 hover:shadow-xl transition-all duration-300 flex flex-col"
+    >
+      {/* Image */}
+      <div className="relative bg-gray-50 h-40 sm:h-48 md:h-56 overflow-hidden">
+        {imgSrc ? (
           <img
-            className="w-full h-full object-contain p-2 sm:p-3"
+            src={imgSrc}
             alt={product.name}
-            src={product.images[0].startsWith("http") ? product.images[0] : `${API_URL}/uploads/${product.images[0]}`}
+            className="w-full h-full object-contain p-3 sm:p-4 group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <span className="material-symbols-outlined text-4xl text-outline/40">image</span>
+            <span className="material-symbols-outlined text-5xl text-gray-200">image</span>
           </div>
         )}
-        {product.oldPrice && (
-          <span className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-error text-white text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
-            خصم {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+        {discount && (
+          <span className="absolute top-2.5 right-2.5 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-lg shadow">
+            -{discount}%
           </span>
         )}
+        {product.stock === 0 && (
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+            <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full border">نفذت الكمية</span>
+          </div>
+        )}
       </div>
-      <h3 className="text-on-surface font-semibold text-xs sm:text-sm md:text-base mb-1 sm:mb-2 line-clamp-2">{product.name}</h3>
-      <div className="mt-auto flex flex-col justify-between gap-2">
-        <span className="text-secondary font-bold text-sm sm:text-lg md:text-[24px]">{product.price.toLocaleString()} ر.س</span>
-        <button
-          onClick={(e) => onAdd(e, product)}
-          className="bg-primary text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-1 w-full justify-center"
-        >
-          <span className="material-symbols-outlined text-sm">
-            {addedId === product._id ? "check" : "add_shopping_cart"}
-          </span>
-          <span className="text-xs sm:text-sm">{addedId === product._id ? "تمت" : "أضف"}</span>
-        </button>
+
+      {/* Info */}
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
+        <h3 className="text-on-surface font-semibold text-xs sm:text-sm leading-snug mb-2 line-clamp-2 flex-1">
+          {product.name}
+        </h3>
+
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-2 mb-3">
+            <span className="text-secondary font-extrabold text-base sm:text-lg md:text-xl">
+              {product.price.toLocaleString()}
+            </span>
+            <span className="text-secondary text-xs sm:text-sm font-medium">ر.س</span>
+            {product.oldPrice && (
+              <span className="text-gray-400 line-through text-xs sm:text-sm">
+                {product.oldPrice.toLocaleString()}
+              </span>
+            )}
+          </div>
+
+          <button
+            onClick={(e) => onAdd(e, product)}
+            disabled={product.stock === 0}
+            className={`w-full py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all duration-200 ${
+              isAdded
+                ? "bg-green-500 text-white"
+                : product.stock === 0
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-secondary text-white hover:bg-secondary/85 active:scale-95"
+            }`}
+          >
+            <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
+              {isAdded ? "check_circle" : "add_shopping_cart"}
+            </span>
+            {isAdded ? "تمت الإضافة" : "أضف للسلة"}
+          </button>
+        </div>
       </div>
     </a>
   );
