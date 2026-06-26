@@ -61,7 +61,7 @@ export default function FeaturedProducts() {
     setTimeout(() => setAddedId(null), 1500);
   };
 
-  const featured = allProducts.filter((p) => p.price <= 1000).slice(0, 6);
+  const featured = allProducts.filter((p) => p.price === 1000).slice(0, 6);
 
   const categoryMap = new Map<string, Product[]>();
   for (const p of allProducts) {
