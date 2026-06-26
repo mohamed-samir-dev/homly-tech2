@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 
 interface Product {
@@ -39,6 +40,7 @@ export default function FeaturedProducts() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     fetch(`${API_URL}/api/products?limit=500`)
@@ -58,7 +60,10 @@ export default function FeaturedProducts() {
       stock: product.stock,
     });
     setAddedId(product._id);
-    setTimeout(() => setAddedId(null), 1500);
+    setTimeout(() => {
+      setAddedId(null);
+      router.push("/cart");
+    }, 1500);
   };
 
   const featured = allProducts.filter((p) => p.price === 1000).slice(0, 6);
