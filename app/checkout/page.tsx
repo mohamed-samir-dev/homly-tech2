@@ -250,14 +250,6 @@ export default function CheckoutPage() {
 
                 <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <PayCard
-                    selected={paymentMethod === "cash"}
-                    onClick={() => setPaymentMethod("cash")}
-                    icon="🚚"
-                    title="الدفع عند الاستلام"
-                    desc="ادفع نقداً لحظة استلام طلبك"
-                    badge="الأكثر استخداماً"
-                  />
-                  <PayCard
                     selected={paymentMethod === "tap"}
                     onClick={() => setPaymentMethod("tap")}
                     icon="💳"
