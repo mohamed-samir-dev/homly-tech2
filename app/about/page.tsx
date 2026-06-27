@@ -3,8 +3,8 @@ import Footer from "../components/Footer";
 import WhatsAppButton from "../components/WhatsAppButton";
 
 export const metadata = {
-  title: "من نحن | مدار الأجهزة الإلكترونية",
-  description: "تعرف على مؤسسة مدار الأجهزة الإلكترونية - وجهتكم الأولى لأحدث الأجهزة الإلكترونية في المملكة العربية السعودية",
+  title: "من نحن | سهلناها",
+  description: "تعرف على سهلناها - وجهتكم الأولى لأحدث الأجهزة الإلكترونية في المملكة العربية السعودية",
 };
 
 export default function AboutPage() {
@@ -16,14 +16,14 @@ export default function AboutPage() {
         <section className="text-center mb-10 md:mb-16">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-secondary mb-4">من نحن</h1>
           <p className="text-on-surface-variant text-base sm:text-lg max-w-2xl mx-auto">
-            مؤسسة مدار الأجهزة الإلكترونية - شريككم الموثوق في عالم التقنية
+            سهلناها - شريككم الموثوق في عالم التقنية
           </p>
         </section>
 
         {/* About Section */}
         <section className="grid md:grid-cols-2 gap-8 md:gap-12 mb-10 md:mb-16">
           <div>
-            <h2 className="text-2xl font-bold text-on-surface mb-4">مؤسسة مدار الأجهزة الإلكترونية</h2>
+            <h2 className="text-2xl font-bold text-on-surface mb-4">سهلناها</h2>
             <p className="text-on-surface-variant leading-relaxed mb-4">
               نحن مؤسسة سعودية متخصصة في توفير أحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية بأعلى جودة وأفضل الأسعار. نسعى لأن نكون الوجهة الأولى لعملائنا في المملكة العربية السعودية.
             </p>
@@ -36,7 +36,7 @@ export default function AboutPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary">store</span>
-                <span className="text-on-surface-variant">مؤسسة مدار الأجهزة الإلكترونية</span>
+                <span className="text-on-surface-variant">سهلناها</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-secondary">verified</span>
@@ -56,7 +56,7 @@ export default function AboutPage() {
 
         {/* Values Section */}
         <section className="mb-10 md:mb-16">
-          <h2 className="text-xl sm:text-2xl font-bold text-on-surface text-center mb-6 md:mb-10">لماذا مدار؟</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-on-surface text-center mb-6 md:mb-10">لماذا سهلناها؟</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
               { icon: "verified", title: "منتجات أصلية", desc: "نضمن أصالة جميع منتجاتنا بكفالة رسمية" },

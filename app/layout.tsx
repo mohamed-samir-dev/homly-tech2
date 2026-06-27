@@ -14,8 +14,8 @@ const siteUrl = "https://homelly-tech.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
-    template: "%s | هوملي تيك",
+    default: "سهلناها | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    template: "%s | سهلناها",
   },
   description:
     "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية. نوفر لكم أحدث الابتكارات التقنية من أرقى الماركات العالمية بأفضل الأسعار مع ضمان الجودة.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "أثاث منزلي",
     "مفروشات",
     "ديكور منزلي",
-    "هوملي تيك",
+    "سهلناها",
     "تسوق إلكتروني",
     "أفضل سعر",
     "ماركات عالمية",
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_SA",
     url: siteUrl,
-    siteName: "هوملي تيك",
-    title: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    siteName: "سهلناها",
+    title: "سهلناها | أفضل الأجهزة بأعلى جودة وأفضل سعر",
     description:
       "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية. نوفر لكم أحدث الابتكارات التقنية من أرقى الماركات العالمية.",
     images: [
@@ -44,14 +44,14 @@ export const metadata: Metadata = {
         url: "https://homelly-tech.com/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "هوملي تيك",
+        alt: "سهلناها",
         type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "هوملي تيك | أفضل الأجهزة بأعلى جودة وأفضل سعر",
+    title: "سهلناها | أفضل الأجهزة بأعلى جودة وأفضل سعر",
     description:
       "وجهتكم الأولى لأحدث الأجهزة الإلكترونية والتقنيات المنزلية والمكتبية.",
     images: ["https://homelly-tech.com/og-image.jpg"],

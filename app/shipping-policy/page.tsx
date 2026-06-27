@@ -4,8 +4,8 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "سياسة الشحن | مدار الأجهزة الإلكترونية",
-  description: "سياسة الشحن والتوصيل لمؤسسة مدار الأجهزة الإلكترونية",
+  title: "سياسة الشحن | سهلناها",
+  description: "سياسة الشحن والتوصيل لسهلناها",
 };
 
 export default function ShippingPolicyPage() {
