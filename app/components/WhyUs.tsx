@@ -16,7 +16,7 @@ const features = [
   {
     icon: "payments",
     title: "أسعار تنافسية",
-    desc: "أفضل الأسعار في السوق مع عروض وخصومات دورية على المفروشات والأجهزة",
+    desc: "أفضل الأسعار في السوق مع عروض وخصومات دورية على الأجهزة المنزلية",
     color: "from-amber-500 to-orange-500",
     bg: "bg-amber-50",
   },
@@ -63,7 +63,7 @@ export default function WhyUs() {
         <div className="mt-8 sm:mt-10 md:mt-14 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
           <div className="text-center sm:text-right">
             <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-1">
-              جاهز تبدأ تأثث بيتك؟
+              جاهز تبدأ تسوق الأجهزة المنزلية؟
             </h3>
             <p className="text-gray-500 text-xs sm:text-sm">تصفح آلاف المنتجات واطلب أونلاين بكل سهولة</p>
           </div>

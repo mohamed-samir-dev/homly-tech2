@@ -70,6 +70,7 @@ export default function FeaturedProducts() {
 
   const categoryMap = new Map<string, Product[]>();
   for (const p of allProducts) {
+    if (p.category !== "home_devices") continue;
     if (!categoryMap.has(p.category)) categoryMap.set(p.category, []);
     categoryMap.get(p.category)!.push(p);
   }
@@ -81,17 +82,6 @@ export default function FeaturedProducts() {
 
   return (
     <div dir="rtl" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-      {featured.length > 0 && (
-        <section className="py-8 sm:py-12 md:py-16">
-          <SectionHeader title="منتجاتنا المميزة" href="/products" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
-            {featured.map((p) => (
-              <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
-            ))}
-          </div>
-        </section>
-      )}
-
       {categoryGroups.map(({ category, label, products }) => (
         <div key={category}>
           <div className="border-t border-gray-100 my-2" />

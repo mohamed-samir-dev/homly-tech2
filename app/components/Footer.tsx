@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-1">
             <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 md:mb-3">سهلناها</h3>
             <p className="text-gray-400 leading-relaxed text-xs sm:text-sm mb-4">
-              وجهتك الأولى للمفروشات والأجهزة المنزلية في المملكة العربية السعودية — جودة تثق بها بسعر يناسبك.
+              وجهتك الأولى للأجهزة المنزلية في المملكة العربية السعودية — جودة تثق بها بسعر يناسبك.
             </p>
             <div className="bg-gray-800 rounded-xl p-3 border border-gray-700 inline-block">
               <div className="flex items-center gap-2 mb-1">

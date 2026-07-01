@@ -5,7 +5,7 @@ export default function Hero() {
     <section dir="rtl" className="relative w-full h-[400px] sm:h-[500px] md:h-[620px] overflow-hidden">
       <Image
         src="/home2.webp"
-        alt="سهلناها - مفروشات وأجهزة منزلية بأعلى جودة"
+        alt="سهلناها - أجهزة منزلية بأعلى جودة"
         fill
         className="object-cover object-center"
         priority
@@ -22,7 +22,7 @@ export default function Hero() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-secondary/25 border border-secondary/50 backdrop-blur-sm text-secondary text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full mb-4 sm:mb-5">
               <span>🏠</span>
-              <span>مفروشات وأجهزة منزلية</span>
+              <span>أجهزة منزلية</span>
             </div>
 
             {/* Heading */}
@@ -36,7 +36,7 @@ export default function Hero() {
 
             {/* Description */}
             <p className="text-sm sm:text-base md:text-lg text-white/85 mb-6 sm:mb-8 leading-relaxed font-medium drop-shadow-md">
-              آلاف المنتجات من المفروشات والأجهزة المنزلية
+              آلاف المنتجات من الأجهزة المنزلية
               <br className="hidden sm:block" />
               بأسعار تنافسية وتوصيل لجميع مناطق المملكة
             </p>
