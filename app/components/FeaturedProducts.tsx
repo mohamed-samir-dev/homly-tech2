@@ -64,7 +64,7 @@ export default function FeaturedProducts() {
     }, 1500);
   };
 
-  const featured = allProducts.filter((p) => p.isFeatured).slice(0, 6);
+  const featured = allProducts.filter((p) => p.price >= 1000).sort((a, b) => a.price - b.price).slice(0, 6);
 
   const VISIBLE_CATEGORIES = Object.keys(SUBCATEGORY_LABELS);
 
