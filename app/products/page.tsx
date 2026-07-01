@@ -1,6 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
@@ -13,6 +13,7 @@ interface Product {
   price: number;
   oldPrice?: number;
   category: string;
+  subCategory?: string;
   brand?: string;
   stock: number;
   images: string[];
@@ -21,14 +22,16 @@ interface Product {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  living_room: "معيشة",
-  bedroom: "نوم",
-  office_furniture: "أثاث مكتبي",
-  outdoor_furniture: "أثاث خارجي",
   home_devices: "أجهزة منزلية",
+  tvs: "شاشات",
+  refrigerators: "تلاجات",
+  washing_machines: "غسالات",
+  air_conditioners: "مكيفات",
+  ovens: "أفران",
+  small_appliances: "أجهزة صغيرة",
 };
 
-const VISIBLE_CATEGORIES = ["home_devices"];
+const VISIBLE_CATEGORIES = Object.keys(CATEGORY_LABELS);
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -43,16 +46,18 @@ export default function ProductsPage() {
 function ProductsContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const cat = searchParams.get("category");
-    if (cat) setActiveCategory(cat);
-  }, [searchParams]);
+  const activeCategory = searchParams.get("category") || searchParams.get("subCategory") || "all";
+
+  const setFilter = (key: string) => {
+    if (key === "all") router.push("/products");
+    else router.push(`/products?subCategory=${key}`);
+  };
 
   useEffect(() => {
     fetch(`${API_URL}/api/products`)
@@ -80,10 +85,12 @@ function ProductsContent() {
   };
 
   const filtered = products.filter((p) => {
-    const matchVisible = VISIBLE_CATEGORIES.includes(p.category);
-    const matchCategory = activeCategory === "all" || p.category === activeCategory;
-    const matchSearch = p.name.includes(searchQuery) || p.brand?.includes(searchQuery);
-    return matchVisible && matchCategory && matchSearch;
+    const matchCategory =
+      activeCategory === "all" ||
+      p.category === activeCategory ||
+      p.subCategory === activeCategory;
+    const matchSearch = !searchQuery || p.name.includes(searchQuery) || p.brand?.includes(searchQuery);
+    return matchCategory && matchSearch;
   });
 
   return (
@@ -105,7 +112,7 @@ function ProductsContent() {
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             <button
-              onClick={() => setActiveCategory("all")}
+              onClick={() => setFilter("all")}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
                 activeCategory === "all"
                   ? "bg-secondary text-on-secondary"
@@ -117,7 +124,7 @@ function ProductsContent() {
             {VISIBLE_CATEGORIES.map((key) => (
               <button
                 key={key}
-                onClick={() => setActiveCategory(key)}
+                onClick={() => setFilter(key)}
                 className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
                   activeCategory === key
                     ? "bg-secondary text-on-secondary"
@@ -187,7 +194,7 @@ function ProductsContent() {
                 <div className="p-3 sm:p-4 md:p-5 flex flex-col gap-1.5 sm:gap-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] sm:text-[11px] text-secondary font-semibold bg-secondary/10 px-1.5 sm:px-2.5 py-0.5 rounded-md truncate">
-                      {CATEGORY_LABELS[product.category] || product.category}
+                      {CATEGORY_LABELS[product.subCategory || product.category] || product.category}
                     </span>
                     {product.stock > 0 ? (
                       <span className="text-[9px] sm:text-[11px] text-green-600 font-medium flex items-center gap-0.5">

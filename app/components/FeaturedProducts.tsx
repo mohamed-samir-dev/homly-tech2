@@ -12,32 +12,24 @@ interface Product {
   stock: number;
   images: string[];
   category: string;
+  subCategory?: string;
+  isFeatured?: boolean;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-const CATEGORY_LABELS: Record<string, string> = {
-  laptops: "لابتوبات",
-  tvs: "تلفزيونات",
-  printers: "طابعات",
-  cameras: "كاميرات",
-  accessories: "إكسسوارات",
-  home_devices: "أجهزة منزلية",
+const SUBCATEGORY_LABELS: Record<string, string> = {
+  tvs: "شاشات",
+  refrigerators: "تلاجات",
+  washing_machines: "غسالات",
   air_conditioners: "مكيفات",
-  pillows: "وسائد",
-  furniture: "أثاث",
-  outdoor_furniture: "أثاث خارجي",
-  office_furniture: "أثاث مكتبي",
-  living_room: "معيشة",
-  bedroom: "نوم",
-  pillows_bedding: "وسائد ومفارش",
-  صالون: "صالون",
-  انترية: "انترية",
-  بكجات: "بكجات",
+  ovens: "أفران",
+  small_appliances: "أجهزة صغيرة",
 };
 
 export default function FeaturedProducts() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [randomHomeDevices, setRandomHomeDevices] = useState<Product[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
   const router = useRouter();
@@ -45,7 +37,13 @@ export default function FeaturedProducts() {
   useEffect(() => {
     fetch(`${API_URL}/api/products?limit=500`)
       .then((res) => res.json())
-      .then((data) => setAllProducts(data.data || []))
+      .then((data) => {
+        const products: Product[] = data.data || [];
+        setAllProducts(products);
+        const homeDevices = products.filter((p) => p.category === "home_devices");
+        const shuffled = [...homeDevices].sort(() => Math.random() - 0.5).slice(0, 6);
+        setRandomHomeDevices(shuffled);
+      })
       .catch(() => {});
   }, []);
 
@@ -66,27 +64,60 @@ export default function FeaturedProducts() {
     }, 1500);
   };
 
-  const featured = allProducts.filter((p) => p.price === 1000).slice(0, 6);
+  const featured = allProducts.filter((p) => p.isFeatured).slice(0, 6);
+
+  const VISIBLE_CATEGORIES = Object.keys(SUBCATEGORY_LABELS);
 
   const categoryMap = new Map<string, Product[]>();
   for (const p of allProducts) {
     if (p.category !== "home_devices") continue;
-    if (!categoryMap.has(p.category)) categoryMap.set(p.category, []);
-    categoryMap.get(p.category)!.push(p);
+    const key = p.subCategory || "other";
+    if (!categoryMap.has(key)) categoryMap.set(key, []);
+    categoryMap.get(key)!.push(p);
   }
-  const categoryGroups = Array.from(categoryMap.entries()).map(([cat, products]) => ({
-    category: cat,
-    label: CATEGORY_LABELS[cat] || cat,
-    products: [...products].sort((a, b) => b.price - a.price).slice(0, 6),
-  }));
+  const categoryGroups = Array.from(categoryMap.entries())
+    .filter(([key]) => VISIBLE_CATEGORIES.includes(key))
+    .map(([key, products]) => ({
+      key,
+      label: SUBCATEGORY_LABELS[key] || key,
+      products: [...products].sort((a, b) => b.price - a.price).slice(0, 6),
+    }));
 
   return (
     <div dir="rtl" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-      {categoryGroups.map(({ category, label, products }) => (
-        <div key={category}>
+      {featured.length > 0 && (
+        <div>
           <div className="border-t border-gray-100 my-2" />
           <section className="py-8 sm:py-12 md:py-16">
-            <SectionHeader title={label} href={`/products?category=${category}`} />
+            <SectionHeader title="منتجاتنا المميزة" href="/products?featured=true" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
+              {featured.map((p) => (
+                <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {randomHomeDevices.length > 0 && (
+        <div>
+          <div className="border-t border-gray-100 my-2" />
+          <section className="py-8 sm:py-12 md:py-16">
+            <SectionHeader title="أجهزة منزلية" href="/products?category=home_devices" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
+              {randomHomeDevices.map((p) => (
+                <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {categoryGroups.map(({ key, label, products }) => (
+        <div key={key}>
+          <div className="border-t border-gray-100 my-2" />
+          <section className="py-8 sm:py-12 md:py-16">
+            <SectionHeader title={label} href={`/products?subCategory=${key}`} />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
               {products.map((p) => (
                 <ProductCard key={p._id} product={p} addedId={addedId} onAdd={handleAdd} />
