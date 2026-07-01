@@ -81,7 +81,12 @@ export default function FeaturedProducts() {
       key,
       label: SUBCATEGORY_LABELS[key] || key,
       products: [...products].sort((a, b) => b.price - a.price).slice(0, 6),
-    }));
+    }))
+    .sort((a, b) => {
+      if (a.key === "small_appliances") return 1;
+      if (b.key === "small_appliances") return -1;
+      return 0;
+    });
 
   return (
     <div dir="rtl" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
