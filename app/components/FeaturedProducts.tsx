@@ -40,7 +40,7 @@ export default function FeaturedProducts() {
       .then((data) => {
         const products: Product[] = data.data || [];
         setAllProducts(products);
-        const homeDevices = products.filter((p) => p.category === "home_devices");
+        const homeDevices = products.filter((p) => p.category === "home_devices" && p.price >= 1000);
         const shuffled = [...homeDevices].sort(() => Math.random() - 0.5).slice(0, 6);
         setRandomHomeDevices(shuffled);
       })
