@@ -30,43 +30,23 @@ export default function Categories() {
         <p className="text-on-surface-variant text-sm sm:text-base">اكتشف تشكيلة واسعة تناسب كل ركن في بيتك</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[160px] sm:auto-rows-[200px]">
-        {/* Large card */}
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 auto-rows-[260px] sm:auto-rows-[320px] max-w-2xl mx-auto">
+        {/* Appliances only */}
         <a
-          href={`/products?category=${categories[0].slug}`}
-          className="col-span-2 row-span-2 relative group overflow-hidden rounded-2xl shadow-sm border border-outline-variant"
+          href={`/products?category=${categories[2].slug}`}
+          className="relative group overflow-hidden rounded-2xl shadow-sm border border-outline-variant"
         >
           <img
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            alt={categories[0].name}
-            src={categories[0].image}
+            alt={categories[2].name}
+            src={categories[2].image}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 right-0 p-4 sm:p-6">
-            <span className="text-white text-lg sm:text-xl md:text-2xl font-bold block">{categories[0].name}</span>
-            <span className="text-white/70 text-xs sm:text-sm">{categories[0].desc}</span>
+            <span className="text-white text-lg sm:text-xl md:text-2xl font-bold block">{categories[2].name}</span>
+            <span className="text-white/70 text-xs sm:text-sm">{categories[2].desc}</span>
           </div>
         </a>
-
-        {/* Small cards */}
-        {categories.slice(1).map((cat, i) => (
-          <a
-            key={i}
-            href={`/products?category=${cat.slug}`}
-            className="relative group overflow-hidden rounded-2xl shadow-sm border border-outline-variant"
-          >
-            <img
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              alt={cat.name}
-              src={cat.image}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-            <div className="absolute bottom-0 right-0 p-3 sm:p-4">
-              <span className="text-white text-sm sm:text-base font-bold block">{cat.name}</span>
-              <span className="text-white/70 text-[10px] sm:text-xs">{cat.desc}</span>
-            </div>
-          </a>
-        ))}
       </div>
 
       <div className="text-center mt-5 sm:mt-6">

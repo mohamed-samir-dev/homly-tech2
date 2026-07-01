@@ -28,6 +28,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   home_devices: "أجهزة منزلية",
 };
 
+const VISIBLE_CATEGORIES = ["home_devices"];
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function ProductsPage() {
@@ -78,9 +80,10 @@ function ProductsContent() {
   };
 
   const filtered = products.filter((p) => {
+    const matchVisible = VISIBLE_CATEGORIES.includes(p.category);
     const matchCategory = activeCategory === "all" || p.category === activeCategory;
     const matchSearch = p.name.includes(searchQuery) || p.brand?.includes(searchQuery);
-    return matchCategory && matchSearch;
+    return matchVisible && matchCategory && matchSearch;
   });
 
   return (
@@ -111,7 +114,7 @@ function ProductsContent() {
             >
               الكل
             </button>
-            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+            {VISIBLE_CATEGORIES.map((key) => (
               <button
                 key={key}
                 onClick={() => setActiveCategory(key)}
@@ -121,7 +124,7 @@ function ProductsContent() {
                     : "bg-surface-container-low text-on-surface-variant hover:bg-secondary/10"
                 }`}
               >
-                {label}
+                {CATEGORY_LABELS[key]}
               </button>
             ))}
           </div>
