@@ -12,7 +12,6 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "tap">("cash");
   const [form, setForm] = useState({ customerName: "", phone: "", address: "", notes: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -52,26 +51,15 @@ export default function CheckoutPage() {
           phone: form.phone,
           address: form.address,
           notes: form.notes,
-          paymentMethod: paymentMethod === "tap" ? "tap" : "cash_on_delivery",
+          paymentMethod: "cash_on_delivery",
           items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "حدث خطأ");
 
-      if (paymentMethod === "tap") {
-        const tapRes = await fetch(`${API_URL}/api/orders/${data.data._id}/tap-session`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-        const tapData = await tapRes.json();
-        if (!tapRes.ok) throw new Error(tapData.message || "فشل إنشاء جلسة الدفع");
-        clearCart();
-        window.location.href = tapData.checkoutUrl;
-      } else {
-        clearCart();
-        router.push(`/order-success?id=${data.data._id}`);
-      }
+      clearCart();
+      router.push(`/order-success?id=${data.data._id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "حدث خطأ غير متوقع");
     } finally {
@@ -248,14 +236,17 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <PayCard
-                    selected={paymentMethod === "tap"}
-                    onClick={() => setPaymentMethod("tap")}
-                    icon="💳"
-                    title="بطاقة بنكية / مدى"
-                    desc="دفع إلكتروني آمن عبر Tap"
-                  />
+                <div className="p-5 sm:p-6">
+                  <div className="flex items-center gap-3 rounded-2xl p-4 border-2 border-secondary bg-secondary/5">
+                    <span className="text-2xl">💵</span>
+                    <div>
+                      <p className="font-bold text-sm text-secondary">الدفع عند الاستلام</p>
+                      <p className="text-xs text-gray-400 mt-0.5">ادفع نقداً عند استلام طلبك</p>
+                    </div>
+                    <div className="mr-auto w-5 h-5 rounded-full border-2 border-secondary flex items-center justify-center">
+                      <div className="w-2.5 h-2.5 rounded-full bg-secondary" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -269,11 +260,6 @@ export default function CheckoutPage() {
                   <>
                     <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                     جاري معالجة الطلب...
-                  </>
-                ) : paymentMethod === "tap" ? (
-                  <>
-                    <span className="material-symbols-outlined">credit_card</span>
-                    المتابعة للدفع الإلكتروني
                   </>
                 ) : (
                   <>
@@ -410,36 +396,3 @@ function InputField({
   );
 }
 
-function PayCard({
-  selected, onClick, icon, title, desc, badge,
-}: {
-  selected: boolean; onClick: () => void; icon: string; title: string; desc: string; badge?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`relative text-right rounded-2xl p-4 border-2 transition-all duration-200 w-full flex flex-col gap-2 ${
-        selected
-          ? "border-secondary bg-secondary/5 shadow-md shadow-secondary/10"
-          : "border-gray-100 bg-gray-50/50 hover:border-gray-200 hover:bg-white"
-      }`}
-    >
-      {badge && (
-        <span className="absolute top-2.5 left-2.5 text-[9px] font-bold bg-secondary text-white px-2 py-0.5 rounded-full">
-          {badge}
-        </span>
-      )}
-      <div className="flex items-center gap-3">
-        <span className="text-2xl">{icon}</span>
-        <div className="flex-1">
-          <p className={`font-bold text-sm ${selected ? "text-secondary" : "text-gray-800"}`}>{title}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
-        </div>
-        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${selected ? "border-secondary" : "border-gray-300"}`}>
-          {selected && <div className="w-2.5 h-2.5 rounded-full bg-secondary" />}
-        </div>
-      </div>
-    </button>
-  );
-}
